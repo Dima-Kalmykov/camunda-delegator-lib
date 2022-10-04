@@ -7,5 +7,6 @@ package ru.tinkoff.top.camunda.delegator.delegates.executors.interceptors.output
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ResultVariable(
     val name: String = "",
-    val isLocal: Boolean = true
+    val isLocal: Boolean = true,
+    val setIfNull: Boolean = true
 )

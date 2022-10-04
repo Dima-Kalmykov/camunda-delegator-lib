@@ -9,6 +9,7 @@ import org.mockito.kotlin.isNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import ru.tinkoff.top.camunda.delegator.annotations.CamundaDelegate
 import ru.tinkoff.top.camunda.delegator.annotations.DelegateExecute
 import ru.tinkoff.top.camunda.delegator.delegates.DelegateInformation
@@ -118,5 +119,42 @@ class MultipleResultExecutionWriterTest {
 
         verify(execution, never()).setVariableLocal(any(), any())
         verify(execution, never()).setVariable(any(), any())
+    }
+
+    @Test
+    fun `when delegate returns variable with setIfNull=false then context is never updated`() {
+        class DelegateResult(
+            @ResultVariable
+            val first: String,
+
+            @ResultVariable
+            val second: Int?,
+
+            @ResultVariable(setIfNull = false)
+            val third: Int?
+        )
+
+        @CamundaDelegate
+        class CustomDelegate {
+
+            @DelegateExecute
+            @MultipleResults
+            fun test() = DelegateResult("Great lupa", null, null)
+        }
+
+        val delegateInformation = DelegateInformation(
+            CustomDelegate(),
+            DelegateMetaInformation(CustomDelegate::class.java, CustomDelegate::test.javaMethod!!)
+        )
+
+        val interceptor = MultipleResultExecutionWriter().also {
+            it.nextExecutor = DelegateExecutorImpl()
+        }
+
+        interceptor.execute(execution, delegateInformation, emptyArray())
+
+        verify(execution).setVariableLocal(eq("first"), eq("Great lupa"))
+        verify(execution).setVariableLocal(eq("second"), eq(null))
+        verifyNoMoreInteractions(execution)
     }
 }

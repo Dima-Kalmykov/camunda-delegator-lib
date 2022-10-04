@@ -54,6 +54,10 @@ class SingleResultExecutionWriter : DelegateInterceptor() {
             logger.warn { "Unsupported ${delegateMethod.returnType} return type for processor SingleResultProcessor" }
             return
         }
+        if (!resultVariable.setIfNull) {
+            return
+        }
+
         if (resultVariable.isLocal) {
             execution.setVariableLocal(resultVariable.name, result)
         } else {

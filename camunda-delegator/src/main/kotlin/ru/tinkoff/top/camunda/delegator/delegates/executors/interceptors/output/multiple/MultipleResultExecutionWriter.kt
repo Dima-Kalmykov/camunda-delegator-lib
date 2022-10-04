@@ -65,6 +65,9 @@ class MultipleResultExecutionWriter : DelegateInterceptor() {
             val info = p.findAnnotation<ResultVariable>() ?: return@forEach
             val variable = p.getter.call(result)
             val paramName = getParameterName(p, info)
+            if (!info.setIfNull) {
+                return
+            }
             if (info.isLocal) {
                 execution.setVariableLocal(paramName, variable)
             } else {
@@ -84,6 +87,9 @@ class MultipleResultExecutionWriter : DelegateInterceptor() {
         delegateMethod.returnType.kotlin.memberProperties.forEach { p ->
             val info = p.findAnnotation<ResultVariable>() ?: return@forEach
             val paramName = getParameterName(p, info)
+            if (!info.setIfNull) {
+                return
+            }
             if (info.isLocal) {
                 execution.setVariableLocal(paramName, null)
             } else {

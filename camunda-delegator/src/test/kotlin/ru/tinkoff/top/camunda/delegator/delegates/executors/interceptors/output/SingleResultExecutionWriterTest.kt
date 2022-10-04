@@ -133,6 +133,34 @@ class SingleResultExecutionWriterTest {
 
         interceptor.execute(execution, delegateInformation, emptyArray())
 
+        assertContextIsNeverUpdated()
+    }
+
+    @Test
+    fun `when delegate returns variable with setIfNull=false then context is never updated`() {
+        @CamundaDelegate
+        class CustomDelegate {
+
+            @DelegateExecute
+            @SingleResultVariable("result", setIfNull = false)
+            fun test() = "Super pupa"
+        }
+
+        val delegateInformation = DelegateInformation(
+            CustomDelegate(),
+            DelegateMetaInformation(CustomDelegate::class.java, CustomDelegate::test.javaMethod!!)
+        )
+
+        val interceptor = SingleResultExecutionWriter().also {
+            it.nextExecutor = DelegateExecutorImpl()
+        }
+
+        interceptor.execute(execution, delegateInformation, emptyArray())
+
+        assertContextIsNeverUpdated()
+    }
+
+    private fun assertContextIsNeverUpdated() {
         verify(execution, never()).setVariableLocal(any(), any())
         verify(execution, never()).setVariable(any(), any())
     }

@@ -177,6 +177,7 @@ public abstract interface annotation class ru/tinkoff/top/camunda/delegator/dele
 public abstract interface annotation class ru/tinkoff/top/camunda/delegator/delegates/executors/interceptors/output/multiple/annotaions/ResultVariable : java/lang/annotation/Annotation {
 	public abstract fun isLocal ()Z
 	public abstract fun name ()Ljava/lang/String;
+	public abstract fun setIfNull ()Z
 }
 
 public final class ru/tinkoff/top/camunda/delegator/delegates/executors/interceptors/output/single/SingleResultExecutionWriter : ru/tinkoff/top/camunda/delegator/delegates/executors/interceptors/DelegateInterceptor {
@@ -191,6 +192,7 @@ public final class ru/tinkoff/top/camunda/delegator/delegates/executors/intercep
 public abstract interface annotation class ru/tinkoff/top/camunda/delegator/delegates/executors/interceptors/output/single/SingleResultVariable : java/lang/annotation/Annotation {
 	public abstract fun isLocal ()Z
 	public abstract fun name ()Ljava/lang/String;
+	public abstract fun setIfNull ()Z
 }
 
 public abstract interface class ru/tinkoff/top/camunda/delegator/delegates/factory/MethodHandlerDelegateFactory {
